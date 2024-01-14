@@ -1,32 +1,306 @@
-# Prerequisites
-*.d
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <algorithm>
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+/*
+    * This Program consists of 9 Functions which performs different tasks;
+      Functions are as follows;
+      1. createPlayer();   Takes the Input of Player Information from user
+      2. readPlayer();  Shows the last Input information of Player
+      3. saveToFile(); Writes the Input information into the File "Players.txt"
+      4. searchPlayer();  Searches the information of the player
+      5. deletePlayer();  Deletes the Player's Record
+      6. printAllRecords();  Shows complete Player's Records
+      7. updatePlayer(); Modify the Player's record
+      8. clearFile(); Clears the complete Player's Record Database
+      9. printPlayer();
 
-# Precompiled Headers
-*.gch
-*.pch
+*/
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+using namespace std;
 
-# Fortran module files
-*.mod
-*.smod
+class Player {
+private: int id;
+       string firstName;
+       string lastName;
+       int age;
+       string gender;
+       string address;
+       long long phonenumber;
+       string game;
+public: Player(int id, string firstName, string lastName, int age, string gender, string address, long long phonenumber, string game) : id(id),
+    firstName(firstName),
+    lastName(lastName),
+    age(age),
+    gender(gender),
+    address(address),
+    phonenumber(phonenumber),
+    game(game) {}
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+      int getId() const {
+          return id;
+      }
 
-# Executables
-*.exe
-*.out
-*.app
+      string getFirstName() const {
+          return firstName;
+      }
+
+      string getLastName() const {
+          return lastName;
+      }
+
+      int getAge() const {
+          return age;
+      }
+
+      string getGender() const {
+          return gender;
+      }
+
+      string getAddress() const {
+          return address;
+      }
+
+      long long getPhoneNumber() const {
+          return phonenumber;
+      }
+
+      string getGame() const {
+          return game;
+      }
+
+      void setFirstName(string firstName) {
+          this->firstName = firstName;
+      }
+
+      void setLastName(string lastName) {
+          this->lastName = lastName;
+      }
+
+      void setAge(int age) {
+          this->age = age;
+      }
+
+      void setGender(string gender) {
+          this->gender = gender;
+      }
+
+      void setAddress(string address) {
+          this->address = address;
+      }
+
+      void setPhoneNumber(long long phonenumber) {
+          this->phonenumber = phonenumber;
+      }
+
+      void setGame(string game) {
+          this->game = game;
+      }
+};
+
+void saveToFile(const vector < Player >& players,
+    const string& fileName) {
+    ofstream file(fileName);
+    for (const auto& Player : players) {
+        file << Player.getId() << ',' << Player.getFirstName() << ',' << Player.getLastName() << ',' << Player.getAge() << ',' << Player.getGender() << ',' << Player.getAddress() << ',' << Player.getPhoneNumber() << ',' << Player.getGame() << '\n';
+    }
+}
+
+vector < Player > readFromFile(const string& fileName) {
+    vector < Player > players;
+    ifstream file(fileName);
+    string line;
+    while (getline(file, line)) {
+        int id, age;
+        string firstName, lastName, address, gender, game;
+        long long phonenumber;
+        stringstream ss(line);
+        getline(ss, firstName, ',');
+        getline(ss, lastName, ',');
+        getline(ss, gender, ',');
+        getline(ss, game, ',');
+        ss >> id >> age >> gender >> address >> phonenumber >> game;
+        getline(ss, address);
+        //getline(ss, phonenumber)
+        players.emplace_back(id, firstName, lastName, age, gender, address, phonenumber, game);
+    }
+    return players;
+}
+
+void printPlayer(const Player& Player) {
+    cout << "ID: " << Player.getId() << ", First Name: " << Player.getFirstName() << ", Last Name: " << Player.getLastName() << ", Age: " << Player.getAge() << ", Gender: " << Player.getGender() << ", Address: " << Player.getAddress() << ", Phone Number: " << Player.getPhoneNumber() << ", Game: " << Player.getGame() << '\n';
+}
+
+void printAllRecords(const vector<Player>& players) {
+    cout << "All records:" << endl;
+    for (const auto& Player : players) {
+        printPlayer(Player);
+    }
+}
+
+void createPlayer(vector < Player >& players) {
+    int id, age;
+    string firstName, lastName, address, gender, game;
+    long long phonenumber;
+    cout << "Enter Player ID: ";
+    cin >> id;
+    cout << "Enter First Name: ";
+    cin >> firstName;
+    cout << "Enter Last Name: ";
+    cin >> lastName;
+    cout << "Enter Age: ";
+    cin >> age;
+    cout << "Enter Gender (Male/Female): ";
+    cin >> gender;
+    cout << "Enter Address: ";
+    cin >> address;
+    cout << "Enter Phone Number: ";
+    cin >> phonenumber;
+    cout << "Enter Game: ";
+    cin >> game;
+    players.emplace_back(id, firstName, lastName, age, gender, address, phonenumber, game);
+}
+
+void readPlayer(const vector < Player >& players) {
+    int id;
+    cout << "Enter Player ID: ";
+    cin >> id;
+    for (const auto& Player : players) {
+        if (Player.getId() == id) {
+            printPlayer(Player);
+            return;
+        }
+    }
+    cout << "Player with ID " << id << " not found.\n";
+}
+
+void updatePlayer(vector < Player >& players) {
+    int id, age;
+    string firstName, lastName, address, gender, game;
+    long long phonenumber;
+    cout << "Enter ID: ";
+    cin >> id;
+    for (auto& Player : players) {
+        if (Player.getId() == id) {
+            cout << "Enter New First Name: ";
+            cin >> firstName;
+            cout << "Enter New Last Name: ";
+            cin >> lastName;
+            cout << "Enter New Age: ";
+            cin >> age;
+            cout << "Enter Gender (Male/Female): ";
+            cin >> gender;
+            cout << "Enter Address: ";
+            cin >> address;
+            cout << "Enter Phone Number: ";
+            cin >> phonenumber;
+            cout << "Enter Game: ";
+            cin >> game;
+            Player.setFirstName(firstName);
+            Player.setLastName(lastName);
+            Player.setAge(age);
+            Player.setGender(gender);
+            Player.setAddress(address);
+            Player.setPhoneNumber(phonenumber);
+            Player.setGame(game);
+            cout << "Player with ID " << id << " updated.\n";
+            return;
+        }
+    }
+    cout << "Player with ID " << id << " not found.\n";
+}
+
+void deletePlayer(vector < Player >& players) {
+    int id;
+    cout << "Enter ID: ";
+    cin >> id;
+    players.erase(remove_if(players.begin(), players.end(), [id](const Player& Player) {
+        return Player.getId() == id;
+    }), players.end());
+    cout << "Player with ID " << id << " deleted.\n";
+}
+
+void searchPlayer(const vector < Player >& players) {
+    string name;
+    cout << "Enter First Name: ";
+    cin >> name;
+    vector < Player > matches;
+    copy_if(players.begin(), players.end(), back_inserter(matches), [name](const Player& Player) {
+        return Player.getFirstName() == name || Player.getLastName() == name;
+    });
+    if (matches.empty()) {
+        cout << "No matches found.\n";
+    }
+    else {
+        for (const auto& match : matches) {
+            printPlayer(match);
+        }
+    }
+}
+
+void clearFile(const string& fileName) {
+    int x;
+    cout << "Do you want to delete the complete database of Players...?\n Press 1 to confirm: ";
+    cin >> x;
+
+    if (x == 1) {
+        //remove(fileName);
+        ofstream file(fileName, ofstream::out | ofstream::trunc);
+        file.close();
+        cout << "File content cleared." << endl;
+    }
+
+
+}
+
+int main() {
+    vector < Player > players = readFromFile("players.txt");
+    while (true) {
+        cout << "\n\n=============== PLAYER MANAGEMENT MENU ===================\n";
+        cout << "\nChoose an option:\n\n";
+        cout << "1. Add a new Player record:\n";
+        cout << "2. Search/Read a Player record using ID:\n";
+        cout << "3. Modify a Player record using ID:\n";
+        cout << "4. Delete a Player record using ID:\n";
+        cout << "5. Search/Read a Player record using First Name:\n";
+        cout << "6. Show All Player Records:\n";
+        cout << "7. Clear the complete database of Players:\n";
+        cout << "8. Exit\n\n";
+        int choice;
+        cin >> choice;
+        switch (choice) {
+        case 1:
+            createPlayer(players);
+            saveToFile(players, "players.txt");
+            break;
+        case 2:
+            readPlayer(players);
+            break;
+        case 3:
+            updatePlayer(players);
+            saveToFile(players, "players.txt");
+            break;
+        case 4:
+            deletePlayer(players);
+            saveToFile(players, "players.txt");
+            break;
+        case 5:
+            searchPlayer(players);
+            break;
+        case 6:
+            printAllRecords(players);
+            break;
+        case 7:
+            clearFile("players.txt");
+            break;
+        case 8:
+            return 0;
+        default:
+            cout << "Invalid choice.\n";
+        }
+    }
+    return 0;
+} 
+
